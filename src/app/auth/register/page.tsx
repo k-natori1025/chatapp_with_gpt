@@ -32,7 +32,12 @@ const Register = () => {
     )
     .catch((error) => {
       console.log(error);
-      alert(error);
+      if(error.code == "auth/email-already-in-use") {
+        alert("このメールアドレスはすでに使われています。")
+      }
+      else {
+        alert(error);
+      }
     });
   };
   
