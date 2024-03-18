@@ -1,18 +1,18 @@
 "use client";
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import Link from 'next/link';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import React from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { auth } from '../../../../firebase';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 type Inputs = {
   email: string;
   password: string;
 }
 
-const Register = () => {
+const Login = () => {
 
   const router = useRouter()
   const { 
@@ -23,16 +23,16 @@ const Register = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data)
-    await createUserWithEmailAndPassword(auth, data.email, data.password)
+    await signInWithEmailAndPassword(auth, data.email, data.password)
     .then((userCredential) => {
         const user = userCredential.user;
-        router.push("/auth/login");
+        router.push("/");
       }
     )
     .catch((error) => {
       console.log(error);
-      if(error.code == "auth/email-already-in-use") {
-        alert("このメールアドレスはすでに使われています。")
+      if(error.code == "auth/invalid-credential") {
+        alert("そのようなユーザーは存在しません")
       }
       else {
         alert(error);
@@ -46,7 +46,7 @@ const Register = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8 rounded-lg shadow-md w-100"
       >
-        <h1 className="mb-4 text-2xl text-gray-700 font-medium">新規登録</h1>
+        <h1 className="mb-4 text-2xl text-gray-700 font-medium">ログイン</h1>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-600">
             Email
@@ -93,20 +93,20 @@ const Register = () => {
           <button
             type="submit"
             className="text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
-            style={{ backgroundColor: "#0093E9", backgroundImage: "linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)"}}
+            style={{ backgroundColor: "#abf061", backgroundImage: "linear-gradient(132deg, #abf061 0%, #2edc6d 50%, #33b913 100%)"}}
           >
-            新規登録
+            ログイン
           </button>
         </div>
         <div className="mt-4">
           <span className="text-gray-600 text-sm">
-            既にアカウントをお持ちですか？
+            まだ登録していませんか？
           </span>
           <Link
-            href={"/auth/login"}
+            href={"/auth/register"}
             className="text-blue-500 text-sm font-bold ml-1 hover:text-blue-700"
           >
-            ログインページへ
+            新規登録ページへ
           </Link>
         </div>
       </form>
@@ -114,4 +114,4 @@ const Register = () => {
   );
 }
 
-export default Register
+export default Login
