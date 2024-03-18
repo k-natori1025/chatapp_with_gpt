@@ -6,6 +6,7 @@ import { IoMdSend } from "react-icons/io";
 import { db } from '../../../firebase';
 import { useAppContext } from '@/context/AppContext';
 import OpenAI from 'openai';
+import LoadingIcons from 'react-loading-icons';
 
 type Message = {
   text: string;
@@ -23,6 +24,7 @@ const Chat = () => {
   const { selectedRoom } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // 各ルームに紐づくメッセージを取得
   useEffect(() => {
@@ -59,12 +61,15 @@ const Chat = () => {
     const messageCollectionRef = collection(roomDocRef, "messages");
     await addDoc(messageCollectionRef, messageData);
 
+    setInputMessage("");
+    setIsLoading(true);
     // open aiからの回答
     const gpt3Response = await openai.chat.completions.create({
       messages: [{role: "user", content: inputMessage}],
       model: 'gpt-3.5-turbo',
     });
-    
+    setIsLoading(false);
+
     const botResponse = gpt3Response.choices[0].message.content;
     // open aiからの回答をfirestoreに保存
     await addDoc(messageCollectionRef, {
@@ -97,6 +102,7 @@ const Chat = () => {
             </div>
           </div>
         ))}
+        {isLoading && <LoadingIcons.TailSpin stroke="#98ff98"/>}
       </div>
       <div className="flex-shrink-0 relative">
         <input 
@@ -104,6 +110,7 @@ const Chat = () => {
           placeholder="Send a Message" 
           className="border-2 rounded w-full focus:outline-none p-2"
           onChange={(e) => setInputMessage(e.target.value)}
+          value={inputMessage}
         />
         <button 
           className="absolute right-4 items-center inset-y-0"
