@@ -3,7 +3,7 @@
 import { Timestamp, addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { IoIosLogOut } from "react-icons/io";
-import { db } from '../../../firebase';
+import { auth, db } from '../../../firebase';
 import { useAppContext } from '@/context/AppContext';
 
 type Room = {
@@ -45,6 +45,10 @@ const Sidebar = () => {
     setSelectedRoom(roomId);
   };
 
+  const handleLogout = () => {
+    auth.signOut();
+  };
+
   const addNewRoom = async() => {
     const roomName = prompt("ルーム名を入力してください")
     if(roomName) {
@@ -77,7 +81,10 @@ const Sidebar = () => {
           ))}
         </ul>
       </div>
-      <div className="flex items-center justify-evenly mb-4 cursor-pointer p-2 bg-slate-200 text-slate-700 rounded hover:bg-slate-700 hover:text-slate-200">
+      <div
+        onClick={handleLogout}
+        className="flex items-center justify-evenly mb-4 cursor-pointer p-2 bg-slate-200 text-slate-700 rounded hover:bg-slate-700 hover:text-slate-200"
+      >
         <IoIosLogOut />
         <span className="font-semibold">ログアウト</span>
       </div>
