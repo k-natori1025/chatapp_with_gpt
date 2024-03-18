@@ -111,6 +111,12 @@ const Chat = () => {
           className="border-2 rounded w-full focus:outline-none p-2"
           onChange={(e) => setInputMessage(e.target.value)}
           value={inputMessage}
+          // enterキーで送信されるようにする
+          onKeyDown={(e) => {
+            if(e.key === "Enter") {
+              sendMessage();
+            }
+          }}
         />
         <button 
           className="absolute right-4 items-center inset-y-0"
