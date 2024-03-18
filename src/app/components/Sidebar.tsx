@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { IoIosLogOut } from "react-icons/io";
 import { auth, db } from '../../../firebase';
 import { useAppContext } from '@/context/AppContext';
+import { DiVim } from 'react-icons/di';
 
 type Room = {
   id: string;
@@ -81,6 +82,7 @@ const Sidebar = () => {
           ))}
         </ul>
       </div>
+      {user && <div className='mb-2 p-4 text-slate-100 text-lg font-medium'>{user.email}</div>}
       <div
         onClick={handleLogout}
         className="flex items-center justify-evenly mb-4 cursor-pointer p-2 bg-slate-200 text-slate-700 rounded hover:bg-slate-700 hover:text-slate-200"
