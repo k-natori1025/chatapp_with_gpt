@@ -1,6 +1,6 @@
 "use client";
 
-import { Timestamp, collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { IoIosLogOut } from "react-icons/io";
 import { db } from '../../../firebase';
@@ -43,12 +43,27 @@ const Sidebar = () => {
 
   const selectRoom = (roomId: string) => {
     setSelectedRoom(roomId);
-  }
+  };
+
+  const addNewRoom = async() => {
+    const roomName = prompt("ルーム名を入力してください")
+    if(roomName) {
+      const newRoomRef = collection(db, "rooms");
+      await addDoc(newRoomRef, {
+        name: roomName,
+        userId: userId,
+        createdAt: serverTimestamp(),
+      });
+    };
+  };
   
   return (
     <div className="h-full overflow-y-auto px-5 flex flex-col" style={{ backgroundColor: "#0093E9", backgroundImage: "linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)"}}>
       <div className="flex-grow">
-        <div className="cursor-pointer flex items-center justify-evenly border mt-2 rounded-md hover:bg-blue-500 duration-150">
+        <div
+          onClick={addNewRoom}
+          className="cursor-pointer flex items-center justify-evenly border mt-2 rounded-md hover:bg-blue-500 duration-150"
+        >
           <span className="text-white text-2xl font-semibold py-4">+</span>
           <h1 className="text-white text-l font-semibold py-4">Add New Chat</h1>
         </div>

@@ -112,11 +112,11 @@ const Chat = () => {
           onChange={(e) => setInputMessage(e.target.value)}
           value={inputMessage}
           // enterキーで送信されるようにする
-          onKeyDown={(e) => {
-            if(e.key === "Enter") {
-              sendMessage();
-            }
-          }}
+          // onKeyDown={(e) => {
+          //   if(e.key === "Enter") {
+          //     sendMessage();
+          //   }
+          // }}
         />
         <button 
           className="absolute right-4 items-center inset-y-0"
