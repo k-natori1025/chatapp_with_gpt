@@ -1,7 +1,7 @@
 "use client";
 
 import { Timestamp, addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { IoMdSend } from "react-icons/io";
 import { db } from '../../../firebase';
 import { useAppContext } from '@/context/AppContext';
@@ -21,10 +21,13 @@ const Chat = () => {
     dangerouslyAllowBrowser: true
   });
 
-  const { selectedRoom } = useAppContext();
+  const { selectedRoom, selectedRoomName } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const scrollDiv = useRef<HTMLDivElement>(null);
+
 
   // 各ルームに紐づくメッセージを取得
   useEffect(() => {
@@ -46,6 +49,17 @@ const Chat = () => {
       fetchMessages();
     }
   }, [selectedRoom])
+
+  // messagesが更新されるたびに一番下にスクロールされるようにする
+  useEffect(() => {
+    if(scrollDiv.current) {
+      const element = scrollDiv.current;
+      element.scrollTo({
+        top: element.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [messages]);
 
   const sendMessage = async () => {
     if(!inputMessage.trim()) return;
@@ -81,8 +95,8 @@ const Chat = () => {
 
   return (
     <div className="h-full p-4 flex flex-col" style={{backgroundColor: "#F4F5F7"}}>
-      <h1 className="font-semibold text-2xl mb-4">Room1</h1>
-      <div className="flex-grow overflow-y-auto mb-4">
+      <h1 className="font-semibold text-2xl mb-4">{selectedRoomName}</h1>
+      <div className="flex-grow overflow-y-auto mb-4" ref={scrollDiv}>
         {messages.map((message, index) => (
           <div key={index} className={ message.sender === "user" ? "text-right" : "text-left"}>
             <div className={ 
